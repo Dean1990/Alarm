@@ -8,11 +8,18 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.TextUtils;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -36,7 +43,11 @@ public class AlarmService extends Service {
     public static String CHANNEL_SERVICE = "Service";
 
     Vibrator mVibrator;
-    long[] mSequence;//存一个序列，单位是秒
+    SoundPool mSoundPool;
+    int mVoiceId;
+    PowerManager.WakeLock mWakeLock;
+
+    Sequence mSequence;
     int mPosition;
     long lastNum;//上一次触发闹钟的循环数
 
@@ -49,11 +60,20 @@ public class AlarmService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, AlarmService.class.getName());
+        mWakeLock.acquire();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if (intent!=null) {
             mPosition = 0;
-            mSequence = intent.getLongArrayExtra("sequence");
+            mSequence = intent.getParcelableExtra(MainActivity.KEY_SEQUENCE);
             if (mSequence!=null) {
 
                 String context = "Alarm Service";
@@ -63,35 +83,63 @@ public class AlarmService extends Service {
                         , PendingIntent.FLAG_CANCEL_CURRENT);
                 Notification notification = createNotification(AlarmService.this,
                         mServiceNotifiyId, CHANNEL_ID, CHANNEL_SERVICE,
-                        R.mipmap.ic_launcher, R.mipmap.ic_launcher, "Alarm working",
+                        R.mipmap.logo, R.mipmap.logo, "Alarm working",
                         getApplicationContext().getString(R.string.app_name), context, context, pendingIntent);
 
                 startForeground(mServiceNotifiyId, notification);
 
+                //init
                 mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                SoundPool.Builder poolBuilder = new SoundPool.Builder();
+                poolBuilder.setMaxStreams(1);
+                AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
+                attrBuilder.setLegacyStreamType(AudioManager.STREAM_ALARM);
+                poolBuilder.setAudioAttributes(attrBuilder.build());
+                mSoundPool = poolBuilder.build();
+                mVoiceId = mSoundPool.load(this, R.raw.di, 1);
 
                 Disposable disposable = Observable.interval(1, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long num) throws Exception {
-                        if (mSequence != null && mPosition < mSequence.length) {
-                            long time = mSequence[mPosition];
-                            if ((num - lastNum) == time) {
-                                mVibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                        if (mSequence != null && mSequence.getData()!=null &&  mPosition < mSequence.getData().length) {
+                            long time = mSequence.getData()[mPosition];
+                            long temp = num - lastNum;
+                            EventBus.getDefault().post(new DownCount(time - temp));
+                            if (temp == time) {
+                                effect();
                                 mPosition++;
                                 lastNum = num;
-                                if (mPosition >= mSequence.length) {
-                                    mPosition = 0;
+                                if (mPosition >= mSequence.getData().length) {
+                                    if (mSequence.isLoop()) {
+                                        mPosition = 0;
+                                    }else {
+                                        //close
+                                        onDestroy();
+                                    }
                                 }
                             }
                         }
                     }
                 });
                 mDisposable.add(disposable);
+                EventBus.getDefault().post(new AlarmStatus(true));
             }
         }
-        return super.onStartCommand(intent, flags, startId);
+//        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
+
+    private void effect(){
+        if (mSequence!=null) {
+            if (mSequence.isVibration()) {
+                mVibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
+            if (mSequence.isRing()) {
+                mSoundPool.play(mVoiceId, 1, 1, 1, 0, 1);
+            }
+        }
+    }
 
 
     public static Notification createNotification(
@@ -134,8 +182,13 @@ public class AlarmService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        EventBus.getDefault().post(new AlarmStatus(false));
         mDisposable.clear();
         stopForeground(true);
+        if (mWakeLock!=null){
+            mWakeLock.release();
+            mWakeLock = null;
+        }
+        super.onDestroy();
     }
 }

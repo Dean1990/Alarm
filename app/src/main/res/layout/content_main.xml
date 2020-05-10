@@ -4,89 +4,166 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="15dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
-    android:padding="15dp"
     tools:showIn="@layout/activity_main">
 
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/layoutSequence"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:textSize="12sp"
-            android:text="@string/sequence"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sequence"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imgLoop"
+                android:src="@drawable/loop"
+                android:layout_width="20dp"
+                android:layout_height="20dp"/>
+
+            <ImageView
+                android:visibility="gone"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/imgRing"
+                android:src="@drawable/ring"
+                android:layout_width="20dp"
+                android:layout_height="20dp"/>
+
+            <ImageView
+                android:visibility="gone"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/imgVibration"
+                android:src="@drawable/vibrations"
+                android:layout_width="20dp"
+                android:layout_height="20dp"/>
+
+        </LinearLayout>
 
         <TextView
-            android:layout_marginTop="5dp"
-            android:textSize="14sp"
-            android:textStyle="bold"
             android:id="@+id/tvSequence"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:textSize="14sp"
-            android:visibility="gone"
-            android:id="@+id/etSequence"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
 
-        <TextView
-            android:textSize="10sp"
+        <LinearLayout
+            android:layout_marginTop="10dp"
             android:visibility="gone"
-            android:text="@string/sequence_desc"
-            android:textStyle="bold"
-            android:id="@+id/tvSequenceDesc"
+            android:id="@+id/layoutEdit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/etSequence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                 />
+
+            <TextView
+                android:id="@+id/tvSequenceDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sequence_desc"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_weight="1"
+                    android:id="@+id/cbLoop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loop" />
+                <CheckBox
+                    android:layout_weight="1"
+                    android:id="@+id/cbRing"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ring" />
+                <CheckBox
+                    android:layout_weight="1"
+                    android:id="@+id/cbVibration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vibration" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <Button
-        android:layout_marginTop="5dp"
         android:id="@+id/btnEdit"
-        app:layout_constraintTop_toBottomOf="@+id/layoutSequence"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:text="@string/edit"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/edit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSequence" />
 
     <View
         android:id="@+id/view1"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
         android:layout_marginTop="10dp"
+        android:background="@color/colorAccent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnEdit"
-        android:background="@color/colorAccent"
-        android:layout_width="0dp"
-        android:layout_height="0.5dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnEdit" />
 
     <Button
-        android:layout_marginTop="10dp"
         android:id="@+id/btnOpen"
-        app:layout_constraintTop_toBottomOf="@+id/view1"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="@string/open"
-         />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
+
     <Button
         android:id="@+id/btnClose"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnOpen"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="@string/close"
-        />
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnOpen" />
+
+    <TextView
+        android:id="@+id/tvDownCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="@color/colorAccent"
+        android:textSize="200sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

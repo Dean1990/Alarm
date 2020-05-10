@@ -8,5 +8,10 @@
     <string name="sequence">序列</string>
     <string name="sequence_desc">编辑序列说明：单位为秒，以-分割</string>
     <string name="sequence_empty">序列为空，闹钟无法运行</string>
-    <string name="alarm_working">有闹钟正在运行，请先点关闭</string>
+    <string name="alarm_working">有闹钟正在运行，请先关闭</string>
+    <string name="alarm_open">闹钟已开启</string>
+    <string name="alarm_close">闹钟已关闭</string>
+    <string name="loop">重复</string>
+    <string name="ring">铃声</string>
+    <string name="vibration">震动</string>
 </resources>
