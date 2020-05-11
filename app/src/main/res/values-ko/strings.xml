@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">알람 시계</string>
+    <string name="settings">설정</string>
+    <string name="open">오픈</string>
+    <string name="close">닫기</string>
+    <string name="edit">편집</string>
+    <string name="save">저장</string>
+    <string name="series">타이밍</string>
+    <string name="series_desc">타이밍 설명 편집 : 단위는 초입니다, "-"로 구분</string>
+    <string name="series_empty">시퀀스가 비어 있고 알람 시계를 실행할 수 없습니다</string>
+    <string name="alarm_working">알람 시계가 작동 중입니다. 먼저 끄십시오</string>
+    <string name="alarm_open">알람이 켜져 있습니다</string>
+    <string name="alarm_close">알람이 꺼져 있습니다</string>
+    <string name="loop">반복</string>
+    <string name="ring">벨소리</string>
+    <string name="vibration">흔들어</string>
+</resources>

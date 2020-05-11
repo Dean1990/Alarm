@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">目覚まし時計</string>
+    <string name="settings">セットアップ</string>
+    <string name="open">オープン</string>
+    <string name="close">閉じる</string>
+    <string name="edit">編集する</string>
+    <string name="save">保存する</string>
+    <string name="series">タイミング</string>
+    <string name="series_desc">タイミングの説明を編集：単位は秒、「-」で区切られた</string>
+    <string name="series_empty">シーケンスは空です、目覚まし時計は実行できません</string>
+    <string name="alarm_working">目覚まし時計が作動しています。先にオフにしてください</string>
+    <string name="alarm_open">アラームがオンです</string>
+    <string name="alarm_close">アラームはオフです</string>
+    <string name="loop">繰り返す</string>
+    <string name="ring">着信音</string>
+    <string name="vibration">シェイク</string>
+</resources>

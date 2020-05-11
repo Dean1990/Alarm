@@ -26,7 +26,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sequence"
+                android:text="@string/series"
                 android:textSize="14sp" />
 
             <ImageView
@@ -81,7 +81,7 @@
                 android:id="@+id/tvSequenceDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sequence_desc"
+                android:text="@string/series_desc"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 />

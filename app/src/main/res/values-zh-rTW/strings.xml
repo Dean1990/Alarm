@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">時序鬧鐘</string>
+    <string name="settings">設置</string>
+    <string name="open">開啟</string>
+    <string name="close">關閉</string>
+    <string name="edit">編輯</string>
+    <string name="save">保存</string>
+    <string name="series">時序</string>
+    <string name="series_desc">編輯時序說明：單位為秒，以“-”分隔</string>
+    <string name="series_empty">時序為空，鬧鐘無法運行</string>
+    <string name="alarm_working">有鬧鐘正在運行，請先關閉</string>
+    <string name="alarm_open">鬧鐘已開啟</string>
+    <string name="alarm_close">鬧鐘已關閉</string>
+    <string name="loop">重復</string>
+    <string name="ring">鈴聲</string>
+    <string name="vibration">震動</string>
+</resources>
