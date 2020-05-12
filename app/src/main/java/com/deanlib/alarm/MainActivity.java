@@ -191,6 +191,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 imgLoop.setVisibility(isChecked?View.VISIBLE:View.GONE);
+                String text = etSequence.getText().toString();
+                if (!TextUtils.isEmpty(text)) {
+                    tvSequence.setText(convertShowStauts(text, isChecked));
+                }
             }
         });
 
@@ -212,16 +216,16 @@ public class MainActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(sequenceStr)) {
             Sequence sequence = JSON.parseObject(sequenceStr, Sequence.class);
             if (sequence!=null) {
-                tvSequence.setText(convertShowStauts(sequence.getData()));
                 cbLoop.setChecked(sequence.isLoop());
                 cbRing.setChecked(sequence.isRing());
                 cbVibration.setChecked(sequence.isVibration());
+                tvSequence.setText(convertShowStauts(sequence.getData()));
             }
         }else {
-            tvSequence.setText(convertShowStauts("30-5"));
             cbLoop.setChecked(true);
             cbRing.setChecked(true);
             cbVibration.setChecked(true);
+            tvSequence.setText(convertShowStauts("30-5"));
         }
 
     }
@@ -295,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
         StringBuffer show = new StringBuffer();
         if (arr!=null && arr.length>0){
             mSeqList.clear();
+            String arrow =  " "+ ARROW + " ";
             for (long l : arr){
                 if (l>0){
                     mSeqList.add(l);
@@ -302,20 +307,33 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            if (!cbLoop.isChecked()){
+                show.delete(show.length() - arrow.length(),show.length());
+            }
+
         }
         return show.toString();
     }
 
     private String convertShowStauts(String edit){
+        return convertShowStauts(edit, cbLoop.isChecked());
+    }
+
+    private String convertShowStauts(String edit, boolean isLoop){
         StringBuffer show = new StringBuffer();
         if (!TextUtils.isEmpty(edit)){
             mSeqList.clear();
+            String arrow =  " "+ ARROW + " ";
             String[] split = edit.split(SPLIT_CHAR);
             for (String s : split){
                 if (!TextUtils.isEmpty(s) && TextUtils.isDigitsOnly(s)){
                     mSeqList.add(Long.valueOf(s));
-                    show.append(s + "s " + ARROW + " ");
+                    show.append(s + "s" + arrow);
                 }
+            }
+
+            if (split.length > 0 && !isLoop){
+                show.delete(show.length() - arrow.length(),show.length());
             }
 
         }
