@@ -1,9 +1,12 @@
 package com.deanlib.alarm;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -14,6 +17,8 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -39,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
 
     TextView tvSequence;
     EditText etSequence;
-//    TextView tvSequenceDesc;
+    //    TextView tvSequenceDesc;
     Button btnEdit;
     Button btnOpen;
     TextView tvDownCount;
-//    Button btnClose;
+    //    Button btnClose;
     View layoutEdit;
     CheckBox cbLoop;
     CheckBox cbRing;
@@ -51,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgLoop;
     ImageView imgRing;
     ImageView imgVibration;
+    TextView tvSettingsBattery;
 
     List<Long> mSeqList;
     SharedPreferences mSharedPreferences;
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setVisibility(View.GONE);
 
         mSeqList = new ArrayList<>();
-        mSharedPreferences = getSharedPreferences("config",Context.MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences("config", Context.MODE_PRIVATE);
 
         etSequence = findViewById(R.id.etSequence);
         tvSequence = findViewById(R.id.tvSequence);
@@ -95,20 +101,21 @@ public class MainActivity extends AppCompatActivity {
         imgLoop = findViewById(R.id.imgLoop);
         imgRing = findViewById(R.id.imgRing);
         imgVibration = findViewById(R.id.imgVibration);
+        tvSettingsBattery = findViewById(R.id.tvSettingsBattery);
 
 
         //init
-        if (isAlarmWorking()){
+        if (isAlarmWorking()) {
             btnOpen.setText(R.string.close);
-        }else {
+        } else {
             btnOpen.setText(R.string.open);
         }
 
         btnOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSeqList == null && mSeqList.isEmpty()){
-                    Toast.makeText(getApplicationContext(),R.string.series_empty,Toast.LENGTH_SHORT).show();
+                if (mSeqList == null && mSeqList.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), R.string.series_empty, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 btnOpen.setEnabled(false);
@@ -116,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(MainActivity.this, AlarmService.class);
 
-                    intent.putExtra(KEY_SEQUENCE,packageSequence());
+                    intent.putExtra(KEY_SEQUENCE, packageSequence());
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(intent);
@@ -125,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     btnOpen.setText(R.string.close);
 
-                }else {
+                } else {
                     Intent i = new Intent(MainActivity.this, AlarmService.class);
                     stopService(i);
                     btnOpen.setText(R.string.open);
@@ -152,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                         tvSequence.setText(convertShowStauts(s.toString()));
                     } else {
                         etSequence.setText(mBeforeText);
-                        etSequence.setSelection(mBeforeText.length()-1);
+                        etSequence.setSelection(mBeforeText.length() - 1);
                     }
                 }
             }
@@ -166,17 +173,17 @@ public class MainActivity extends AppCompatActivity {
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (layoutEdit.getVisibility() == View.VISIBLE){
+                if (layoutEdit.getVisibility() == View.VISIBLE) {
                     //保存
                     Sequence sequence = packageSequence();
-                    if (sequence!=null) {
+                    if (sequence != null) {
                         mSharedPreferences.edit().putString(KEY_SEQUENCE, JSON.toJSONString(sequence)).apply();
                     }
                     layoutEdit.setVisibility(View.GONE);
                     btnEdit.setText(R.string.edit);
                     btnOpen.setEnabled(true);
 
-                }else {
+                } else {
                     //编辑
                     layoutEdit.setVisibility(View.VISIBLE);
                     btnEdit.setText(R.string.save);
@@ -190,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         cbLoop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                imgLoop.setVisibility(isChecked?View.VISIBLE:View.GONE);
+                imgLoop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 String text = etSequence.getText().toString();
                 if (!TextUtils.isEmpty(text)) {
                     tvSequence.setText(convertShowStauts(text, isChecked));
@@ -201,33 +208,60 @@ public class MainActivity extends AppCompatActivity {
         cbRing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                imgRing.setVisibility(isChecked?View.VISIBLE:View.GONE);
+                imgRing.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
 
         cbVibration.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                imgVibration.setVisibility(isChecked?View.VISIBLE:View.GONE);
+                imgVibration.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
 
-        String sequenceStr = mSharedPreferences.getString(KEY_SEQUENCE,"");
+        String sequenceStr = mSharedPreferences.getString(KEY_SEQUENCE, "");
         if (!TextUtils.isEmpty(sequenceStr)) {
             Sequence sequence = JSON.parseObject(sequenceStr, Sequence.class);
-            if (sequence!=null) {
+            if (sequence != null) {
                 cbLoop.setChecked(sequence.isLoop());
                 cbRing.setChecked(sequence.isRing());
                 cbVibration.setChecked(sequence.isVibration());
                 tvSequence.setText(convertShowStauts(sequence.getData()));
             }
-        }else {
+        } else {
             cbLoop.setChecked(true);
             cbRing.setChecked(true);
             cbVibration.setChecked(true);
             tvSequence.setText(convertShowStauts("30-5"));
         }
 
+        tvSettingsBattery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MainActivity.this).setTitle(R.string.statement)
+                        .setMessage(R.string.statement_ignore_battery)
+                        .setPositiveButton(R.string.to_settings, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                ignoreBatteryOptimization();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null).show();
+
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!hasIgnoredBatteryOptimization()){
+            tvSettingsBattery.setVisibility(View.VISIBLE);
+        }else {
+            tvSettingsBattery.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -243,27 +277,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDownCountMessage(DownCount downCount){
-        if (isAppInForeground(this) && tvDownCount!=null){
-            tvDownCount.setText(downCount.getNum()+"");
+    public void onDownCountMessage(DownCount downCount) {
+        if (isAppInForeground(this) && tvDownCount != null) {
+            tvDownCount.setText(downCount.getNum() + "");
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAlarmStatusMessage(AlarmStatus alarmStatus){
-        if (alarmStatus.isWorking){
+    public void onAlarmStatusMessage(AlarmStatus alarmStatus) {
+        if (alarmStatus.isWorking) {
             btnOpen.setText(R.string.close);
-            Toast.makeText(getApplicationContext(),R.string.alarm_open,Toast.LENGTH_SHORT).show();
-        }else {
+            Toast.makeText(getApplicationContext(), R.string.alarm_open, Toast.LENGTH_SHORT).show();
+        } else {
             btnOpen.setText(R.string.open);
-            Toast.makeText(getApplicationContext(),R.string.alarm_close,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.alarm_close, Toast.LENGTH_SHORT).show();
         }
         btnOpen.setEnabled(true);
     }
 
-    private Sequence packageSequence(){
+    private Sequence packageSequence() {
         Sequence sequence = null;
-        if (mSeqList!=null && mSeqList.size()>0) {
+        if (mSeqList != null && mSeqList.size() > 0) {
             long[] arr = new long[mSeqList.size()];
             for (int i = 0; i < mSeqList.size(); i++) {
                 arr[i] = mSeqList.get(i);
@@ -277,17 +311,17 @@ public class MainActivity extends AppCompatActivity {
         return sequence;
     }
 
-    private boolean isAlarmWorking(){
+    private boolean isAlarmWorking() {
         return isServiceRunning(MainActivity.this, "com.deanlib.alarm.AlarmService");
     }
 
-    private String convertEditStatus(){
+    private String convertEditStatus() {
         StringBuffer edit = new StringBuffer();
-        if (mSeqList!=null){
-            for (Long l : mSeqList){
+        if (mSeqList != null) {
+            for (Long l : mSeqList) {
                 edit.append(l + SPLIT_CHAR);
             }
-            if (edit.length()>0) {
+            if (edit.length() > 0) {
                 edit.deleteCharAt(edit.length() - 1);
             }
         }
@@ -295,45 +329,45 @@ public class MainActivity extends AppCompatActivity {
         return edit.toString();
     }
 
-    private String convertShowStauts(long[] arr){
+    private String convertShowStauts(long[] arr) {
         StringBuffer show = new StringBuffer();
-        if (arr!=null && arr.length>0){
+        if (arr != null && arr.length > 0) {
             mSeqList.clear();
-            String arrow =  " "+ ARROW + " ";
-            for (long l : arr){
-                if (l>0){
+            String arrow = " " + ARROW + " ";
+            for (long l : arr) {
+                if (l > 0) {
                     mSeqList.add(l);
                     show.append(l + "s " + ARROW + " ");
                 }
             }
 
-            if (!cbLoop.isChecked()){
-                show.delete(show.length() - arrow.length(),show.length());
+            if (!cbLoop.isChecked()) {
+                show.delete(show.length() - arrow.length(), show.length());
             }
 
         }
         return show.toString();
     }
 
-    private String convertShowStauts(String edit){
+    private String convertShowStauts(String edit) {
         return convertShowStauts(edit, cbLoop.isChecked());
     }
 
-    private String convertShowStauts(String edit, boolean isLoop){
+    private String convertShowStauts(String edit, boolean isLoop) {
         StringBuffer show = new StringBuffer();
-        if (!TextUtils.isEmpty(edit)){
+        if (!TextUtils.isEmpty(edit)) {
             mSeqList.clear();
-            String arrow =  " "+ ARROW + " ";
+            String arrow = " " + ARROW + " ";
             String[] split = edit.split(SPLIT_CHAR);
-            for (String s : split){
-                if (!TextUtils.isEmpty(s) && TextUtils.isDigitsOnly(s)){
+            for (String s : split) {
+                if (!TextUtils.isEmpty(s) && TextUtils.isDigitsOnly(s)) {
                     mSeqList.add(Long.valueOf(s));
                     show.append(s + "s" + arrow);
                 }
             }
 
-            if (split.length > 0 && !isLoop){
-                show.delete(show.length() - arrow.length(),show.length());
+            if (split.length > 0 && !isLoop) {
+                show.delete(show.length() - arrow.length(), show.length());
             }
 
         }
@@ -403,5 +437,32 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return isRunning;
+    }
+
+    /**
+     * 判断 是否拿到忽略
+     *
+     * @return
+     */
+    private boolean hasIgnoredBatteryOptimization() {
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        return powerManager.isIgnoringBatteryOptimizations(this.getPackageName());
+    }
+
+    /**
+     * 忽略电池优化
+     */
+    private void ignoreBatteryOptimization() {
+        try {
+            if (!hasIgnoredBatteryOptimization()) {
+                Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.settings_ignore_battery_optimizations_fail, Toast.LENGTH_LONG).show();
+        }
+
     }
 }

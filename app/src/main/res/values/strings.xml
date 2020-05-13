@@ -15,4 +15,10 @@
     <string name="loop">Repeat</string>
     <string name="ring">Ring</string>
     <string name="vibration">Vibration</string>
+    <string name="settings_ignore_battery_optimizations">The recommended :\nsettings ignore battery optimizations</string>
+    <string name="settings_ignore_battery_optimizations_fail">The request to open the system Settings failed, please try to open it manually in the system Settings</string>
+    <string name="statement">Statement</string>
+    <string name="statement_ignore_battery">When ignoring battery optimizations is allowed, the application will not have any background services and will not consume power in the "CLOSE" case</string>
+    <string name="to_settings">Settings</string>
+    <string name="cancel">Cancel</string>
 </resources>

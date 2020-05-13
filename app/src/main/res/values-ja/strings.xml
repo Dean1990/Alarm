@@ -15,4 +15,10 @@
     <string name="loop">繰り返す</string>
     <string name="ring">着信音</string>
     <string name="vibration">シェイク</string>
+    <string name="settings_ignore_battery_optimizations">設置提案:\n無視する電池の最適化</string>
+    <string name="settings_ignore_battery_optimizations_fail">システムの設定を開く要求に失敗した場合は、システムの設定を手動で開くようにしてください</string>
+    <string name="statement">せいめい</string>
+    <string name="statement_ignore_battery">バッテリ最適化を無視することを許可した後、アプリケーションが「閉じる」の場合、バックエンド・サービスは何もなく、電力を消費しない</string>
+    <string name="to_settings">設置に行く</string>
+    <string name="cancel">とりけし</string>
 </resources>
