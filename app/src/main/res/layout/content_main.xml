@@ -1,194 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main">
 
-    <LinearLayout
-        android:id="@+id/layoutSequence"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/series"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:visibility="gone"
-                android:id="@+id/imgLoop"
-                android:src="@drawable/loop"
-                android:layout_width="20dp"
-                android:layout_height="20dp"/>
-
-            <ImageView
-                android:visibility="gone"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/imgRing"
-                android:src="@drawable/ring"
-                android:layout_width="20dp"
-                android:layout_height="20dp"/>
-
-            <ImageView
-                android:visibility="gone"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/imgVibration"
-                android:src="@drawable/vibrations"
-                android:layout_width="20dp"
-                android:layout_height="20dp"/>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvSequence"
-            android:layout_width="match_parent"
+            android:id="@+id/layoutSequence"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:id="@+id/layoutEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/etSequence"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                 />
-
-            <TextView
-                android:id="@+id/tvSequenceDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/series_desc"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                />
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-                <CheckBox
-                    android:layout_weight="1"
-                    android:id="@+id/cbLoop"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/loop" />
-                <CheckBox
                     android:layout_weight="1"
-                    android:id="@+id/cbRing"
-                    android:layout_width="0dp"
+                    android:text="@string/series"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imgLoop"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/loop"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/imgRing"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ring"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/imgVibration"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/vibrations"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvSequence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/layoutEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/etSequence"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/ring" />
-                <CheckBox
-                    android:layout_weight="1"
-                    android:id="@+id/cbVibration"
-                    android:layout_width="0dp"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvSequenceDesc"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/vibration" />
+                    android:text="@string/series_desc"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/cbLoop"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/loop" />
+
+                    <CheckBox
+                        android:id="@+id/cbRing"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/ring" />
+
+                    <CheckBox
+                        android:id="@+id/cbVibration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/vibration" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/edit"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutSequence" />
 
-    <Button
-        android:id="@+id/btnEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/edit"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutSequence" />
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            app:layout_constraintBaseline_toBaselineOf="@+id/btnEdit"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/swKeepScreen"
+            android:text="@string/keep_screen_on"
+            app:switchPadding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-    <View
-        android:id="@+id/view1"
-        android:layout_width="0dp"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorAccent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnEdit" />
+        <View
+            android:id="@+id/view1"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnEdit" />
 
-    <Button
-        android:id="@+id/btnOpen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/open"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view1" />
+        <Button
+            android:id="@+id/btnOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/open"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view1" />
 
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/close"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnOpen" />
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/close"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnOpen" />
 
-    <TextView
-        android:id="@+id/tvDownCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:textColor="@color/colorAccent"
-        android:textSize="200sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tvTimes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:text="0"
+            android:textColor="@color/colorAccent"
+            android:textSize="50sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnOpen" />
 
-    <TextView
-        android:gravity="center_horizontal"
-        android:id="@+id/tvSettingsBattery"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
-        android:text="@string/settings_ignore_battery_optimizations"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <View
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@color/colorAccent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSettingsBattery"
-        app:layout_constraintLeft_toLeftOf="@+id/tvSettingsBattery"
-        app:layout_constraintRight_toRightOf="@+id/tvSettingsBattery"
-        android:layout_width="0dp"
-        android:layout_height="1dp"/>
+        <TextView
+            android:id="@+id/tvDownCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/colorPrimary"
+            android:textSize="200sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTimes" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvSettingsBattery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:text="@string/settings_ignore_battery_optimizations"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/tvDownCount"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintLeft_toLeftOf="@+id/tvSettingsBattery"
+            app:layout_constraintRight_toRightOf="@+id/tvSettingsBattery"
+            app:layout_constraintTop_toBottomOf="@+id/tvSettingsBattery" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

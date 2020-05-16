@@ -13,6 +13,7 @@ import android.os.Bundle;
 import com.alibaba.fastjson.JSON;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,9 +22,12 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -57,13 +61,20 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgRing;
     ImageView imgVibration;
     TextView tvSettingsBattery;
+    TextView tvTimes;
+    SwitchMaterial swKeepScreen;
 
     List<Long> mSeqList;
     SharedPreferences mSharedPreferences;
     String mBeforeText;
 
+    int mCachePosition = -1;//设置了正在进行的 list 的 position
+    int mBlinkCount; //闪烁计数
+    SpannableString mSequenceSS;
+
     public static final String SPLIT_CHAR = "-";
     public static final String ARROW = "➜";
+    public static final String FILL_ARROW = " " + ARROW + " ";
 
     public static final String KEY_SEQUENCE = "sequence";
 
@@ -102,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         imgRing = findViewById(R.id.imgRing);
         imgVibration = findViewById(R.id.imgVibration);
         tvSettingsBattery = findViewById(R.id.tvSettingsBattery);
+        tvTimes = findViewById(R.id.tvTimes);
+        swKeepScreen = findViewById(R.id.swKeepScreen);
 
 
         //init
@@ -252,6 +265,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        swKeepScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }else {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -280,6 +304,25 @@ public class MainActivity extends AppCompatActivity {
     public void onDownCountMessage(DownCount downCount) {
         if (isAppInForeground(this) && tvDownCount != null) {
             tvDownCount.setText(downCount.getNum() + "");
+            tvTimes.setText(downCount.getLoopTimes()+"");
+
+            if (mCachePosition != downCount.getPosition()){
+                //序列里 工作阶段变更了
+                mCachePosition = downCount.getPosition();
+                mSequenceSS = getMarkWorkingSequenceSS(mCachePosition);
+                tvSequence.setText(mSequenceSS);
+                mBlinkCount = 0;
+            }else {
+                mBlinkCount++;
+                if (mBlinkCount%2 == 0){
+                    if (mSequenceSS == null){
+                        mSequenceSS = getMarkWorkingSequenceSS(mCachePosition);
+                    }
+                    tvSequence.setText(mSequenceSS);
+                }else {
+                    tvSequence.setText(tvSequence.getText().toString());
+                }
+            }
         }
     }
 
@@ -293,6 +336,27 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), R.string.alarm_close, Toast.LENGTH_SHORT).show();
         }
         btnOpen.setEnabled(true);
+    }
+
+    private SpannableString getMarkWorkingSequenceSS(int position){
+        String text = tvSequence.getText().toString();
+        SpannableString ss = new SpannableString(text);
+        if (!TextUtils.isEmpty(text) && position >= 0) {
+            String[] split = text.split(FILL_ARROW);
+            if (split.length > position) {
+                int start = 0;
+                for (int i = 0;i<split.length;i++){
+                    if (i >= position){
+                        break;
+                    }
+                    start = start + split[i].length() + FILL_ARROW.length();
+                }
+                int end = Math.min(start + split[position].length() + FILL_ARROW.length(), text.length());
+                ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)),
+                        start, end, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return ss;
     }
 
     private Sequence packageSequence() {
@@ -333,16 +397,15 @@ public class MainActivity extends AppCompatActivity {
         StringBuffer show = new StringBuffer();
         if (arr != null && arr.length > 0) {
             mSeqList.clear();
-            String arrow = " " + ARROW + " ";
             for (long l : arr) {
                 if (l > 0) {
                     mSeqList.add(l);
-                    show.append(l + "s " + ARROW + " ");
+                    show.append(l + "s" + FILL_ARROW);
                 }
             }
 
             if (!cbLoop.isChecked()) {
-                show.delete(show.length() - arrow.length(), show.length());
+                show.delete(show.length() - FILL_ARROW.length(), show.length());
             }
 
         }
@@ -357,17 +420,16 @@ public class MainActivity extends AppCompatActivity {
         StringBuffer show = new StringBuffer();
         if (!TextUtils.isEmpty(edit)) {
             mSeqList.clear();
-            String arrow = " " + ARROW + " ";
             String[] split = edit.split(SPLIT_CHAR);
             for (String s : split) {
                 if (!TextUtils.isEmpty(s) && TextUtils.isDigitsOnly(s)) {
                     mSeqList.add(Long.valueOf(s));
-                    show.append(s + "s" + arrow);
+                    show.append(s + "s" + FILL_ARROW);
                 }
             }
 
             if (split.length > 0 && !isLoop) {
-                show.delete(show.length() - arrow.length(), show.length());
+                show.delete(show.length() - FILL_ARROW.length(), show.length());
             }
 
         }

@@ -21,4 +21,5 @@
     <string name="statement_ignore_battery">배터리 최적화값을 무시하도록 허용했을 때, 전력 소모를 방지하기 위해"닫기"하여도 백그라운드를 사용하지 않습니다</string>
     <string name="to_settings">설치</string>
     <string name="cancel">취소</string>
+    <string name="keep_screen_on">화면을 켜십시오</string>
 </resources>

@@ -50,6 +50,7 @@ public class AlarmService extends Service {
     Sequence mSequence;
     int mPosition;
     long lastNum;//上一次触发闹钟的循环数
+    long loopTimes;//循环次数
 
     static CompositeDisposable mDisposable = new CompositeDisposable();
 
@@ -97,6 +98,7 @@ public class AlarmService extends Service {
                 poolBuilder.setAudioAttributes(attrBuilder.build());
                 mSoundPool = poolBuilder.build();
                 mVoiceId = mSoundPool.load(this, R.raw.di, 1);
+                loopTimes = 0;
 
                 Disposable disposable = Observable.interval(1, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
                     @Override
@@ -104,12 +106,13 @@ public class AlarmService extends Service {
                         if (mSequence != null && mSequence.getData()!=null &&  mPosition < mSequence.getData().length) {
                             long time = mSequence.getData()[mPosition];
                             long temp = num - lastNum;
-                            EventBus.getDefault().post(new DownCount(time - temp));
+                            EventBus.getDefault().post(new DownCount(time - temp, loopTimes, mPosition));
                             if (temp == time) {
                                 effect();
                                 mPosition++;
                                 lastNum = num;
                                 if (mPosition >= mSequence.getData().length) {
+                                    loopTimes++;
                                     if (mSequence.isLoop()) {
                                         mPosition = 0;
                                     }else {
